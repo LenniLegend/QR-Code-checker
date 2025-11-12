@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  web:
+    # Build directly from the git repo so a remote host can run a single-line compose command
+    build:
+      # Default repo/branch; override with GIT_REPO env var if needed
+      context: ${GIT_REPO:-https://github.com/LenniLegend/QR-Code-checker.git#main}
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    image: qr-code-checker:latest
+    ports:
+      - "4321:80"
+    restart: unless-stopped

@@ -34,3 +34,31 @@ Hinweise
 
 Weiteres
 - Wenn du `primevue`-Themes anpassen willst, ersetze die importierte Theme-Datei in `src/main.js`.
+
+Docker Deployment
+-----------------
+
+Du kannst das Projekt direkt aus dem Git-Repository als Docker-Container bauen und starten. Ich habe einen Multi-Stage `Dockerfile` hinzugefügt (Build mit Node, Serve mit nginx) sowie eine `docker-compose.yml`, die so konfiguriert ist, dass sie direkt aus dem Git-Repository baut.
+
+Einzeiliger Start (auf deinem Docker-Host, Zsh/Bash):
+
+```bash
+docker compose -f https://raw.githubusercontent.com/LenniLegend/QR-Code-checker/main/docker-compose.yml up --build -d
+```
+
+Hinweise:
+- Der Compose-Build verwendet standardmäßig den Git-URL `https://github.com/LenniLegend/QR-Code-checker.git#main` als Build-Context. Falls du von einem anderen Branch/Repo bauen willst, kannst du die Umgebungsvariable `GIT_REPO` setzen, z. B.: 
+
+```bash
+GIT_REPO=https://github.com/LenniLegend/QR-Code-checker.git#develop docker compose -f https://raw.githubusercontent.com/LenniLegend/QR-Code-checker/main/docker-compose.yml up --build -d
+```
+
+- Der Container ist intern auf Port 80 konfiguriert; der Host-Port ist in der `docker-compose.yml` auf `4321` gesetzt (Host 4321 -> Container 80). Passe die Port-Mapping im `docker-compose.yml` an, falls du einen anderen Host-Port brauchst.
+- Stelle sicher, dass dein Docker/Docker Compose BuildKit-fähig ist (moderne Docker Desktop oder Docker Engine + BuildKit). Die Verwendung eines Git-URLs als Build-Context nutzt die BuildKit-Funktionalität.
+
+Wenn du lieber manuell bauen möchtest, kannst du auch lokal im Repo ausführen:
+
+```bash
+docker build -t qr-code-checker:local .
+docker run -p 4321:80 qr-code-checker:local
+```
