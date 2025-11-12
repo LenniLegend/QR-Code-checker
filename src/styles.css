@@ -122,3 +122,19 @@ html, body, #app {
 .p-mt-3 {
   margin-top: 1rem !important;
 }
+
+/* Mobile adjustments: single-column layout and hide right panel */
+@media (max-width: 768px) {
+  .app-root {
+    grid-template-columns: 1fr;
+  }
+  .right-panel {
+    display: none;
+  }
+  .left-panel {
+    padding: 1rem 1rem;
+  }
+}
+
+/* Optional: make scanner area video responsive */
+.video-container { max-width: 100%; }
