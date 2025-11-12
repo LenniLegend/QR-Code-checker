@@ -7,11 +7,11 @@
       <!-- html5-qrcode container (fallback) -->
       <div v-if="useHtml5" ref="html5El" class="html5qrcode-container"></div>
 
-  <div class="camera-overlay" v-if="!supported">{{ errorMsg || 'Kamera-Erkennung nicht verfügbar' }}</div>
+      <div class="camera-overlay" v-if="!supported">{{ errorMsg || 'Kamera-Erkennung nicht verfügbar' }}</div>
     </div>
 
-    <div class="camera-controls p-mt-2">
-      <Button label="Stop" icon="pi pi-stop" @click="stop" />
+    <div class="camera-controls">
+      <Button label="Stop" icon="pi pi-stop" class="big-button" @click="stop" />
     </div>
   </div>
 </template>
@@ -178,5 +178,5 @@ export default {
 .video-container video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; }
 .html5qrcode-container { position:absolute; top:0; left:0; width:100%; height:100%; }
 .camera-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(0,0,0,0.45); font-weight:700; padding:1rem; text-align:center; }
-.camera-controls { display:flex; gap:0.5rem; }
+.camera-controls { display:flex; justify-content:center; margin-top:0.75rem; }
 </style>

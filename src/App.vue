@@ -2,7 +2,7 @@
   <div class="app-root" :class="{ 'is-mobile': isMobile }">
     <div class="left-panel">
       <div class="left-inner">
-        <div class="status-actions" style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+        <div class="status-actions">
           <div class="status-message">
             <!-- Default message when nothing scanned -->
             <div v-if="!lastResult" class="scan-message">System bereit zum Scannen</div>
@@ -28,8 +28,8 @@
             </div>
           </div>
 
-          <!-- Camera toggle button -->
-          <div>
+          <!-- Controls (mobile only) -->
+          <div class="controls" v-if="isMobile">
             <Button label="Kamera" icon="pi pi-camera" class="big-button" @click="toggleCamera" />
           </div>
         </div>
@@ -37,7 +37,8 @@
         <!-- Scanner area: either inline text scanner or inline camera -->
         <div class="scanner-area">
           <InlineCameraScanner v-if="cameraOpen" @scan-result="onScanResultFromCamera" @error="onCameraError" />
-          <ScannerModal v-else inline @scan-result="onScanResult" />
+          <!-- On mobile we hide the keyboard/input scanner; only show ScannerModal on non-mobile -->
+          <ScannerModal v-else-if="!isMobile" inline @scan-result="onScanResult" />
         </div>
       </div>
     </div>
@@ -129,7 +130,8 @@ export default {
       // flash screen briefly on success
       if (entry.success) {
         flashOn.value = true
-        setTimeout(() => { flashOn.value = false }, 300)
+        // keep the overlay visible long enough for the keyframe animation to run
+        setTimeout(() => { flashOn.value = false }, 720)
       }
 
       // Clear any previous reset timer and set a new one for 5s
@@ -155,6 +157,28 @@ export default {
 <style>
 /* small component-level style overrides (global layout lives in styles.css) */
 .status-actions { margin-bottom: 0.75rem; }
-.screen-flash { position: fixed; inset: 0; background: rgba(25, 135, 84, 0.9); pointer-events: none; opacity: 0; transition: opacity 180ms ease-in-out; z-index: 9999; }
-.screen-flash.show { opacity: 1; }
+/* Full-screen green flash overlay with smoother keyframe fade:
+   - Uses a short, snappy ramp-up followed by a slower fade-out for a pleasant visual.
+   - Keyframes give fine control over timing and easing for in/out separately.
+*/
+.screen-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* don't block clicks */
+  background-color: #198754; /* success green */
+  opacity: 0; /* start hidden */
+  z-index: 99999;
+  will-change: opacity;
+}
+.screen-flash.show {
+  animation: flashFade 700ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+@keyframes flashFade {
+  /* quick ramp to visible, hold, then smooth fade-out */
+  0%   { opacity: 0; }
+  12%  { opacity: 0.9; }
+  60%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
 </style>
