@@ -2,7 +2,7 @@
   <div>
     <div class="history-header">Scan-Historie</div>
 
-    <DataTable :value="history" emptyMessage="Keine Scans">
+    <DataTable :value="history" paginator :rows="10" :rowsPerPageOptions="[, 10, 20, 50]" emptyMessage="Keine Scans">
       <!-- Zeit -->
       <Column header="Zeit">
         <template #body="{ data }">
